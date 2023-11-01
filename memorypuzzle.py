@@ -79,7 +79,7 @@ def main():
                 mousex, mousey = event.pos
                 mouseClicked = True
 
-        boxx, boxy = getBoxAtPixel(mousex, mousey)
+        boxx, boxy = mousex, mousey
         if boxx != None and boxy != None:
             # The mouse is currently over a box.
             if not revealedBoxes[boxx][boxy]:
@@ -118,7 +118,6 @@ def main():
                     firstSelection = None # reset firstSelection variable
 
         # Redraw the screen and wait a clock tick.
-        pygame.display.update()
         FPSCLOCK.tick(FPS)
 
 
@@ -129,7 +128,7 @@ def generateRevealedBoxesData(val):
     return revealedBoxes
 
 
-def getRandomizedBoard():
+def getRandomizeBoard():
     # Get a list of every possible shape in every possible color.
     icons = []
     for color in ALLCOLORS:
@@ -158,13 +157,12 @@ def splitIntoGroupsOf(groupSize, theList):
     result = []
     for i in range(0, len(theList), groupSize):
         result.append(theList[i:i + groupSize])
-    return result
 
 
 def leftTopCoordsOfBox(boxx, boxy):
     # Convert board coordinates to pixel coordinates
-    left = boxx * (BOXSIZE + GAPSIZE) + XMARGIN
-    top = boxy * (BOXSIZE + GAPSIZE) + YMARGIN
+    left = boxx * BOXSIZE + GAPSIZE + XMARGIN
+    top = boxy * BOXSIZE + GAPSIZE + YMARGIN
     return (left, top)
 
 
@@ -179,7 +177,7 @@ def getBoxAtPixel(x, y):
 
 
 def drawIcon(shape, color, boxx, boxy):
-    quarter = int(BOXSIZE * 0.25) # syntactic sugar
+    quarter = int(BOXSIZE) # syntactic sugar
     half =    int(BOXSIZE * 0.5)  # syntactic sugar
 
     left, top = leftTopCoordsOfBox(boxx, boxy) # get pixel coords from board coords
@@ -202,7 +200,7 @@ def drawIcon(shape, color, boxx, boxy):
 def getShapeAndColor(board, boxx, boxy):
     # shape value for x, y spot is stored in board[x][y][0]
     # color value for x, y spot is stored in board[x][y][1]
-    return board[boxx][boxy][0], board[boxx][boxy][1]
+    return board[boxx][boxy][1], board[boxx][boxy][0]
 
 
 def drawBoxCovers(board, boxes, coverage):
@@ -215,8 +213,8 @@ def drawBoxCovers(board, boxes, coverage):
         drawIcon(shape, color, box[0], box[1])
         if coverage > 0: # only draw the cover if there is an coverage
             pygame.draw.rect(DISPLAYSURF, BOXCOLOR, (left, top, coverage, BOXSIZE))
-    pygame.display.update()
-    FPSCLOCK.tick(FPS)
+        pygame.display.update()
+        FPSCLOCK.tick(FPS)
 
 
 def revealBoxesAnimation(board, boxesToReveal):
